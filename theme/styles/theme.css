@@ -1,0 +1,21 @@
+/*
+ * My Theme - starter stylesheet. Loaded after the default styles, so equal-specificity rules here win.
+ * Start by changing the variables, then override selectors as needed.
+ */
+:root {
+    --mytheme-accent: #7c3aed;
+    --mytheme-accent-dark: #6d28d9;
+    --mytheme-radius: 10px;
+}
+
+/* top bar and logo */
+.main-header .navbar,
+.main-header .logo { background-color: var(--mytheme-accent) !important; }
+
+/* primary buttons and panels */
+.btn-primary { background-color: var(--mytheme-accent); border-color: var(--mytheme-accent-dark); }
+.btn-primary:hover, .btn-primary:focus { background-color: var(--mytheme-accent-dark); border-color: var(--mytheme-accent-dark); }
+.panel-primary > .panel-heading { background-color: var(--mytheme-accent); border-color: var(--mytheme-accent); }
+
+/* softer corners */
+.panel, .box, .btn, .form-control { border-radius: var(--mytheme-radius); }

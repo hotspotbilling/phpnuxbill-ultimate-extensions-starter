@@ -1,0 +1,15 @@
+{
+  "name": "My Theme",
+  "slug": "mytheme",
+  "version": "1.0.0",
+  "description": "Starter child theme: adds its own stylesheet and falls back to the default templates for everything else.",
+  "author": "Your Name",
+  "parent": "default",
+  "preview": "preview.png",
+  "requires_php": "8.2",
+  "requires_version": "2025.11.1",
+  "requires_license": false,
+  "license_check_url": "",
+  "update_url": "",
+  "github": ""
+}

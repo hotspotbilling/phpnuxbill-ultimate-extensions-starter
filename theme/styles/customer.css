@@ -1,0 +1,30 @@
+/*
+ * My Theme - customer portal chrome (header, menu, mobile bar, footer).
+ *
+ * The core loads this file by itself, after ui/ui/styles/customer-modern.css, whenever the theme is active (a theme's
+ * styles/customer.css is picked up automatically, parent theme first). You only redefine the --cm-* colour tokens: the
+ * portal's chrome is built from them, so no template has to be copied. The raised mobile Buy button keeps its markup and place;
+ * only its colours change (--cm-accent, --cm-fab-fg, --cm-fab-shadow).
+ *
+ * Light is the default; dark mode adds the dark-mode class to <body>, so dark values go under body.dark-mode.
+ * Available tokens (all optional, see customer-modern.css for their default values):
+ *   --cm-bar --cm-solid --cm-border --cm-text --cm-muted --cm-hover --cm-accent --cm-accent-soft --cm-accent-text
+ *   --cm-fab-fg --cm-fab-shadow --cm-radius --cm-nav-radius --cm-shadow --cm-nav-shadow --cm-nav-text --cm-nav-active
+ */
+body.cm-chrome.modern-skin-dark {
+  --cm-accent: #7c3aed;
+  --cm-accent-soft: #ede9fe;
+  --cm-accent-text: #5b21b6;
+  --cm-fab-fg: #ffffff;
+  --cm-fab-shadow: 0 8px 18px rgba(124, 58, 237, 0.4);
+  --cm-nav-active: #5b21b6;
+}
+
+body.cm-chrome.modern-skin-dark.dark-mode {
+  --cm-accent: #a78bfa;
+  --cm-accent-soft: rgba(167, 139, 250, 0.16);
+  --cm-accent-text: #c4b5fd;
+  --cm-fab-fg: #1e1b4b;
+  --cm-fab-shadow: 0 8px 18px rgba(167, 139, 250, 0.35);
+  --cm-nav-active: #c4b5fd;
+}
