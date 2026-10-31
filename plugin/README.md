@@ -14,6 +14,7 @@ myplugin/
 ├── ui/                    Smarty templates, resolved by plain name ($ui->display('myplugin.tpl'))
 │   ├── myplugin.tpl            admin overview (list + add/delete)
 │   ├── myplugin_settings.tpl   admin settings form
+│   ├── myplugin_page.tpl       plain page for the Reports / Alerts submenus (they show a text and a number badge)
 │   └── myplugin_customer.tpl   customer page
 └── assets/css/myplugin.css  served at pluginAssetUrl('myplugin') . 'css/myplugin.css'
 ```

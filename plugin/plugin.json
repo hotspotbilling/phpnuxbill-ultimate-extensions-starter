@@ -27,10 +27,7 @@
       "icon": "<svg class=\"icon\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M7 8l-4 4l4 4\"/><path d=\"M17 8l4 4l-4 4\"/><path d=\"M14 4l-4 16\"/></svg>",
       "label": "",
       "color": "success",
-      "auth": [
-        "SuperAdmin",
-        "Admin"
-      ]
+      "auth": ["SuperAdmin", "Admin"]
     },
     {
       "type": "submenu",
@@ -40,10 +37,31 @@
       "function": "myplugin/overview",
       "position": "AFTER_DASHBOARD",
       "icon": "",
-      "auth": [
-        "SuperAdmin",
-        "Admin"
-      ]
+      "auth": ["SuperAdmin", "Admin"]
+    },
+    {
+      "type": "submenu",
+      "parent": "myplugin",
+      "name": "Reports",
+      "admin": true,
+      "function": "myplugin/reports",
+      "position": "AFTER_DASHBOARD",
+      "icon": "",
+      "label": "New",
+      "color": "info",
+      "auth": ["SuperAdmin", "Admin"]
+    },
+    {
+      "type": "submenu",
+      "parent": "myplugin",
+      "name": "Alerts",
+      "admin": true,
+      "function": "myplugin/alerts",
+      "position": "AFTER_DASHBOARD",
+      "icon": "",
+      "label": "10",
+      "color": "danger",
+      "auth": ["SuperAdmin", "Admin"]
     },
     {
       "type": "submenu",
@@ -53,10 +71,7 @@
       "function": "myplugin/settings",
       "position": "AFTER_DASHBOARD",
       "icon": "",
-      "auth": [
-        "SuperAdmin",
-        "Admin"
-      ]
+      "auth": ["SuperAdmin", "Admin"]
     },
     {
       "type": "menu",
@@ -66,6 +81,30 @@
       "position": "AFTER_HISTORY",
       "icon": "<svg class=\"icon\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M7 8l-4 4l4 4\"/><path d=\"M17 8l4 4l-4 4\"/><path d=\"M14 4l-4 16\"/></svg>",
       "label": "",
+      "color": "success",
+      "auth": []
+    },
+    {
+      "type": "submenu",
+      "parent": "myplugin_customer",
+      "name": "Submenu 1",
+      "admin": false,
+      "function": "myplugin_customer_details",
+      "position": "AFTER_HISTORY",
+      "icon": "",
+      "label": "New",
+      "color": "danger",
+      "auth": []
+    },
+    {
+      "type": "submenu",
+      "parent": "myplugin_customer",
+      "name": "Submenu 2",
+      "admin": false,
+      "function": "myplugin_customer_details",
+      "position": "AFTER_HISTORY",
+      "icon": "",
+      "label": "10",
       "color": "success",
       "auth": []
     }

@@ -160,7 +160,7 @@ function myplugin_on_customer_buy()
 
 // ---------------------------------------------------------------------------------------------------------------------
 // 5. ADMIN PAGES. Route: ?_route=plugin/myplugin/<section>  (pretty URL: /plugin/myplugin/<section>)
-// The menu entries call this function with "myplugin/overview" and "myplugin/settings"; what follows the first slash arrives
+// The menu entries call this function with "myplugin/overview", "myplugin/settings", "myplugin/reports" and "myplugin/alerts"; what follows the first slash arrives
 // in $routes[2], the next part in $routes[3].
 // ---------------------------------------------------------------------------------------------------------------------
 function myplugin()
@@ -181,6 +181,10 @@ function myplugin()
     switch ($section) {
         case 'settings':
             myplugin_settings($admin);
+            break;
+        case 'reports':                          // a submenu with a text badge ("New"), see plugin.json
+        case 'alerts':                           // a submenu with a number badge ("10")
+            myplugin_simple_page($section);
             break;
         case 'add':
             myplugin_add_item($admin);
@@ -203,6 +207,13 @@ function myplugin_overview()
     $ui->assign('items', Paginator::findMany($query, [], 10, '', true) ?: []);
     run_hook('view_myplugin_overview');          // lets other plugins add to your page: they listen with register_hook()
     $ui->display('myplugin.tpl');                // ui/myplugin.tpl - folder plugins resolve templates by plain name
+}
+
+function myplugin_simple_page($section)
+{
+    global $ui;
+    $ui->assign('_title', $section == 'alerts' ? Lang::T('Alerts') : Lang::T('Reports'));
+    $ui->display('myplugin_page.tpl');
 }
 
 function myplugin_settings($admin)
