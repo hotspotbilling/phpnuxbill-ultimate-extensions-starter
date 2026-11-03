@@ -265,13 +265,16 @@ function myplugin_delete_item($admin, $id)
 
 // ---------------------------------------------------------------------------------------------------------------------
 // 6. A CUSTOMER PAGE (a menu with "admin": false). Route: ?_route=plugin/myplugin_customer
+// Its submenus call it with "myplugin_customer/details" and "myplugin_customer/history"; the section arrives in $routes[2].
 // ---------------------------------------------------------------------------------------------------------------------
 function myplugin_customer()
 {
-    global $ui, $config;
+    global $ui, $config, $routes;
     _auth();                                     // customer sign-in check; it also makes the customer menu show
     $user = User::_info();                       // the signed-in customer's row (id, username, fullname, balance ...)
-    $ui->assign('_title', Lang::T('My Plugin'));
+    $section = $routes[2] ?? '';
+    $titles = ['details' => Lang::T('Details'), 'history' => Lang::T('History')];
+    $ui->assign('_title', isset($titles[$section]) ? Lang::T('My Plugin') . ' - ' . $titles[$section] : Lang::T('My Plugin'));
     $ui->assign('_user', $user);
     $ui->assign('greeting', myplugin_setting('myplugin_greeting', 'Hello'));
     // Lang::moneyFormat($user['balance']) formats an amount with the site's currency settings; use it in templates too.
