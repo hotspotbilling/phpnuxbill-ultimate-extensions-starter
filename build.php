@@ -4,8 +4,13 @@
  *  PHP Mikrotik Billing (https://github.com/hotspotbilling/phpnuxbill/)
  *  by https://t.me/ibnux
  *
- *  Skeleton builder (CLI only). Run it from the folder that holds this file; inside a PHPNuxBill site that folder is
- *  skeletons/, so use  php skeletons/build.php  there. It does not need a PHPNuxBill install to build a package.
+ *  Skeleton builder (CLI only). It does not need a PHPNuxBill install to build a package.
+ *
+ *  Where you run it decides how you call it:
+ *    in the folder that holds this file (the repository's top folder, or custom-folder):
+ *        php build.php <command> or 
+ *        php folder/build.php <command>
+ *  The examples below use the first form.
  *
  *    php build.php list
  *    php build.php zip                          zip every skeleton as-is into dist/
