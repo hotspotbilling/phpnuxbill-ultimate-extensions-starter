@@ -89,5 +89,5 @@ renames the folder, `acme_sms.php`, every `myplugin_` function and `tbl_myplugin
 * Role check and CSRF on every page that changes data (both are in the examples).
 * Every webhook / callback / AJAX function is declared in `"routes"` (`php skeletons/build.php check plugin <folder>`).
 * Escape output in templates with `|escape`.
-* Bump `version` in `plugin.json`; set `github` and/or `update_url` (how updates are served: `PLUGINS.md`, "Publishing and serving updates").
+* Bump `version` in `plugin.json`; set `github` or `zip` (a package on your own server or CDN) and/or `update_url`; sign zip releases with `php skeletons/build.php keygen|sign` (`PLUGINS.md`, "Signing your releases") (how updates are served: `PLUGINS.md`, "Publishing and serving updates").
 * `php -l myplugin.php includes/*.php install.php uninstall.php`.

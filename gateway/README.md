@@ -76,4 +76,4 @@ name and algorithm to your provider.
 * `$_app_stage` decides sandbox vs live URLs (`Live` = live).
 * Enable the gateway in Marketplace > Payment Gateways (**Enable**) or Payment Gateway settings. A gateway with a PHP error,
   unmet requirement or missing licence cannot be enabled.
-* Add `"github"` / `"update_url"` and bump `"version"` when you ship fixes.
+* Add `"github"` or `"zip"` / `"update_url"` and bump `"version"` when you ship fixes.

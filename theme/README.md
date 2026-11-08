@@ -67,5 +67,5 @@ installed the default templates are used.
 ## Release checklist
 
 * Replace `preview.png`, set `author`, `description`, `version`.
-* Add `github` / `update_url` so installs can update.
+* Add `github` or `zip` / `update_url` so installs can update.
 * Activate it in Marketplace > Themes; to roll back, press **Switch to default**.

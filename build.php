@@ -10,6 +10,9 @@
  *    php skeletons/build.php zip                          zip every skeleton as-is into skeletons/dist/
  *    php skeletons/build.php new <type> <slug> "<Name>"   copy a skeleton under a new name and zip it
  *    php skeletons/build.php check plugin <folder|file>   which functions a plugin's URLs call but it has not declared
+ *    php skeletons/build.php keygen <file>                make a signing key (the private key goes in <file>; keep it offline)
+ *    php skeletons/build.php pubkey <file>                print the public key for a key file
+ *    php skeletons/build.php sign <file> <zip> <type> <id> <version>   sign a release zip for a repository entry
  *
  *  <type> is plugin | gateway | theme | device.
  *  Slug rules: plugin/theme  letters, digits, _ and -   (e.g. acme_sms)
@@ -35,6 +38,23 @@ const SKELETONS = [
 function out(string $m): void
 {
     fwrite(STDOUT, $m . "\n");
+}
+
+function needSodium(): void
+{
+    if (!function_exists('sodium_crypto_sign_keypair')) {
+        fail('the PHP sodium extension is needed (it ships with PHP 7.2 and later; enable extension=sodium)');
+    }
+}
+
+function readKey(string $file): string
+{
+    needSodium();
+    $hex = is_file($file) ? trim((string) file_get_contents($file)) : '';
+    if (!preg_match('/^[0-9a-f]{128}$/', $hex)) {
+        fail('usage: give the key file that "keygen" made (' . ($file === '' ? 'none given' : "$file is not a key file") . ')');
+    }
+    return hex2bin($hex);
 }
 
 function fail(string $m): void
@@ -305,6 +325,46 @@ switch ($cmd) {
         }
         exit(checkPlugin($argv[3]));
 
+    case 'keygen':
+        $file = $argv[2] ?? '';
+        if ($file === '') {
+            fail('usage: php skeletons/build.php keygen <file>   e.g. php skeletons/build.php keygen acme-signing.key');
+        }
+        if (is_file($file)) {
+            fail("$file already exists; it is not overwritten (a new key would break updates for everyone who installed with the old one)");
+        }
+        needSodium();
+        $pair = sodium_crypto_sign_keypair();
+        file_put_contents($file, bin2hex(sodium_crypto_sign_secretkey($pair)) . "\n");
+        @chmod($file, 0600);
+        out("Private key saved to $file. Keep it offline and back it up. Never publish it or commit it.");
+        out('Public key (put it in your repository entry as "public_key"):');
+        out(bin2hex(sodium_crypto_sign_publickey($pair)));
+        break;
+
+    case 'pubkey':
+        out(bin2hex(sodium_crypto_sign_publickey_from_secretkey(readKey($argv[2] ?? ''))));
+        break;
+
+    case 'sign':
+        [$keyFile, $zip, $type, $id, $version] = array_pad(array_slice($argv, 2), 5, '');
+        if (in_array('', [$keyFile, $zip, $type, $id, $version], true) || !in_array($type, ['plugin', 'gateway', 'device', 'theme'], true)) {
+            fail('usage: php skeletons/build.php sign <key file> <zip> <plugin|gateway|device|theme> <id> <version>');
+        }
+        if (!is_file($zip)) {
+            fail("$zip not found");
+        }
+        if (!preg_match('/^[0-9A-Za-z][0-9A-Za-z.+_-]{0,39}$/', $version)) {
+            fail('the version may use letters, digits, . + _ - and at most 40 characters');
+        }
+        $sk = readKey($keyFile);
+        $sha = hash_file('sha256', $zip);
+        $sig = bin2hex(sodium_crypto_sign_detached("phpnuxbill-extension:$type:$id:$version\n$sha", $sk));
+        out('Put these in the repository entry for ' . $id . ':');
+        out(json_encode(['zip' => '<the https address of ' . basename($zip) . '>', 'sha256' => $sha, 'version' => $version, 'public_key' => bin2hex(sodium_crypto_sign_publickey_from_secretkey($sk)), 'signature' => $sig], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        out('The version must also be "version" in the zip\'s ' . $type . '.json. A new zip needs a new signature.');
+        break;
+
     default:
-        fail("unknown command '$cmd' (list | zip | new | check)");
+        fail("unknown command '$cmd' (list | zip | new | check | keygen | pubkey | sign)");
 }

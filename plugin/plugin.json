@@ -12,6 +12,7 @@
   "license_check_url": "",
   "update_url": "",
   "github": "",
+  "zip": "",
   "main": "myplugin.php",
   "routes": [
     { "function": "myplugin_webhook", "access": "public" },
