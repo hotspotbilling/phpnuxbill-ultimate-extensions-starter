@@ -111,4 +111,4 @@ Security reminders that apply to every extension: check `_admin()` / `_auth()` a
 `Csrf::check(_post('csrf_token'))` on every state-changing request; escape output (`|escape`) and never concatenate user input
 into SQL (Idiorm binds values); verify webhook signatures before trusting a body.
 
-`dist/` is git-ignored here. The `.htaccess` in this folder blocks web access when it sits inside a PHPNuxBill site.
+`dist/` is git-ignored here.
