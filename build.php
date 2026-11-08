@@ -4,23 +4,24 @@
  *  PHP Mikrotik Billing (https://github.com/hotspotbilling/phpnuxbill/)
  *  by https://t.me/ibnux
  *
- *  Skeleton builder (CLI only).
+ *  Skeleton builder (CLI only). Run it from the folder that holds this file; inside a PHPNuxBill site that folder is
+ *  skeletons/, so use  php skeletons/build.php  there. It does not need a PHPNuxBill install to build a package.
  *
- *    php skeletons/build.php list
- *    php skeletons/build.php zip                          zip every skeleton as-is into skeletons/dist/
- *    php skeletons/build.php new <type> <slug> "<Name>"   copy a skeleton under a new name and zip it
- *    php skeletons/build.php check plugin <folder|file>   which functions a plugin's URLs call but it has not declared
- *    php skeletons/build.php keygen <file>                make a signing key (the private key goes in <file>; keep it offline)
- *    php skeletons/build.php pubkey <file>                print the public key for a key file
- *    php skeletons/build.php sign <file> <zip> <type> <id> <version>   sign a release zip for a repository entry
+ *    php build.php list
+ *    php build.php zip                          zip every skeleton as-is into dist/
+ *    php build.php new <type> <slug> "<Name>"   copy a skeleton under a new name and zip it
+ *    php build.php check plugin <folder|file>   which functions a plugin's URLs call but it has not declared
+ *    php build.php keygen <file>                make a signing key (the private key goes in <file>; keep it offline)
+ *    php build.php pubkey <file>                print the public key for a key file
+ *    php build.php sign <file> <zip> <type> <id> <version>   sign a release zip for a repository entry
  *
  *  <type> is plugin | gateway | theme | device.
  *  Slug rules: plugin/theme  letters, digits, _ and -   (e.g. acme_sms)
  *              gateway       letters, digits, _         (functions are named <slug>_*; start with a letter)
  *              device        a PHP class name           (e.g. AcmeRouter)
  *
- *  Output: skeletons/dist/<slug>/ (the folder to drop into the matching system folder) and
- *  skeletons/dist/<slug>.zip (upload it in Marketplace, or unzip it there yourself).
+ *  Output: dist/<slug>/ (the folder to drop into the matching system folder) and
+ *  dist/<slug>.zip (upload it in Marketplace, or unzip it there yourself).
  */
 
 if (php_sapi_name() !== 'cli') {
@@ -260,7 +261,7 @@ $dist = $root . '/dist';
 switch ($cmd) {
     case 'list':
         foreach (SKELETONS as $type => $s) {
-            out(str_pad($type, 8) . ' skeletons/' . $s['dir'] . '/  ->  installs to ' . $s['target']);
+            out(str_pad($type, 8) . ' ' . $s['dir'] . '/  ->  installs to ' . $s['target']);
         }
         break;
 
@@ -269,7 +270,7 @@ switch ($cmd) {
         foreach (SKELETONS as $type => $s) {
             $zip = $dist . '/' . $type . '-skeleton.zip';
             zipDir($root . '/' . $s['dir'], $zip);
-            out("Built skeletons/dist/{$type}-skeleton.zip");
+            out("Built dist/{$type}-skeleton.zip");
         }
         break;
 
@@ -281,7 +282,7 @@ switch ($cmd) {
             fail('type must be one of: ' . implode(', ', array_keys(SKELETONS)));
         }
         if ($name === '') {
-            fail('usage: php skeletons/build.php new <type> <slug> "<Display Name>"');
+            fail('usage: php build.php new <type> <slug> "<Display Name>"');
         }
         $rule = [
             'plugin' => '/^[A-Za-z][A-Za-z0-9_-]*$/',
@@ -299,7 +300,7 @@ switch ($cmd) {
         $ph = $s['placeholder'];
         $target = $dist . '/' . $slug;
         if (is_dir($target)) {
-            fail("skeletons/dist/$slug already exists; remove it first");
+            fail("dist/$slug already exists; remove it first");
         }
         copyTree($root . '/' . $s['dir'], $target, fn($f) => str_replace($ph, $slug, $f));
         $pairs = [$ph => $slug, $s['label'] => $name];
@@ -315,20 +316,20 @@ switch ($cmd) {
         }
         rewrite($target, $pairs);
         zipDir($target, $dist . '/' . $slug . '.zip');
-        out("Created skeletons/dist/$slug/  and  skeletons/dist/$slug.zip");
+        out("Created dist/$slug/  and  dist/$slug.zip");
         out('Install: Marketplace > upload the zip, or copy the folder to ' . str_replace('<slug>', $slug, $s['target']));
         break;
 
     case 'check':
         if (($argv[2] ?? '') !== 'plugin' || empty($argv[3])) {
-            fail('usage: php skeletons/build.php check plugin <folder|file.php>');
+            fail('usage: php build.php check plugin <folder|file.php>');
         }
         exit(checkPlugin($argv[3]));
 
     case 'keygen':
         $file = $argv[2] ?? '';
         if ($file === '') {
-            fail('usage: php skeletons/build.php keygen <file>   e.g. php skeletons/build.php keygen acme-signing.key');
+            fail('usage: php build.php keygen <file>   e.g. php build.php keygen acme-signing.key');
         }
         if (is_file($file)) {
             fail("$file already exists; it is not overwritten (a new key would break updates for everyone who installed with the old one)");
@@ -359,7 +360,7 @@ switch ($cmd) {
     case 'sign':
         [$keyFile, $zip, $type, $id, $version] = array_pad(array_slice($argv, 2), 5, '');
         if (in_array('', [$keyFile, $zip, $type, $id, $version], true) || !in_array($type, ['plugin', 'gateway', 'device', 'theme'], true)) {
-            fail('usage: php skeletons/build.php sign <key file> <zip> <plugin|gateway|device|theme> <id> <version>');
+            fail('usage: php build.php sign <key file> <zip> <plugin|gateway|device|theme> <id> <version>');
         }
         if (!is_file($zip)) {
             fail("$zip not found");

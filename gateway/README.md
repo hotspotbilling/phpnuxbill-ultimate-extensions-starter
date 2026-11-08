@@ -14,7 +14,7 @@ mygateway/
 ## Make it yours
 
 ```bash
-php skeletons/build.php new gateway acmepay "Acme Pay"
+php build.php new gateway acmepay "Acme Pay"
 ```
 
 The slug becomes the folder and the function prefix (`acmepay_validate_config()` ...), so it must be lowercase letters,

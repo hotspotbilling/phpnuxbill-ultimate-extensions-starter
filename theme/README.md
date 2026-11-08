@@ -23,12 +23,12 @@ mytheme/
 | templates (none shipped) | copy a file from `ui/ui/` to the same path in the theme to override it; use `{$_theme}`, `{$mytheme_tagline}`, `{$price|mytheme_money}` |
 
 A theme can also be licensed: add `"requires_license": true` (a theme has no PHP entry point of its own, so the manifest mode is the
-only one; the core falls back to the default look until a valid key is saved). See `PLUGINS.md` > Licensing.
+only one; the core falls back to the default look until a valid key is saved). See the [plugin guide](https://phpnuxbill.org/docs/extending/plugins/#licensing-a-paid-extension).
 
 ## Make it yours
 
 ```bash
-php skeletons/build.php new theme neon_blue "Neon Blue"
+php build.php new theme neon_blue "Neon Blue"
 ```
 
 then edit `styles/theme.css` (start with the `--mytheme-*` variables) and replace `preview.png` with a screenshot.

@@ -40,7 +40,7 @@ Links go through `getUrl('plugin/myplugin/settings')`, never `U . '...'`, so the
 ## Make it yours
 
 ```bash
-php skeletons/build.php new plugin acme_sms "Acme SMS"
+php build.php new plugin acme_sms "Acme SMS"
 ```
 
 renames the folder, `acme_sms.php`, every `myplugin_` function and `tbl_myplugin_items`, and the display names. Then edit
@@ -65,8 +65,8 @@ renames the folder, `acme_sms.php`, every `myplugin_` function and `tbl_myplugin
 * **Routes**: `?_route=plugin/<function>` only runs a function the plugin has *declared*. A menu function is declared by
   its menu. Anything else (a webhook, an AJAX endpoint, your own API) goes in the `"routes"` list of `plugin.json` with
   an `access` level: `public` (anyone: verify signatures yourself), `admin` or `customer` (the core checks the sign-in
-  first). Single-file plugins call `register_route('fn', 'public')`. See `PLUGINS.md`; check your plugin with
-  `php skeletons/build.php check plugin <folder>`.
+  first). Single-file plugins call `register_route('fn', 'public')`. See the [plugin guide](https://phpnuxbill.org/docs/extending/plugins/); check your plugin with
+  `php build.php check plugin <folder>`.
 * **Hooks**: `register_hook('cronjob_end', 'myplugin_cron')`. Find hook names by searching `run_hook(` in
   `system/controllers/` and `system/cron.php`.
 * **Settings** live in `tbl_appconfig` (`myplugin_*` keys) and are available in `$config` and, in templates, `$_c`.
@@ -87,7 +87,7 @@ renames the folder, `acme_sms.php`, every `myplugin_` function and `tbl_myplugin
 ## Checklist before release
 
 * Role check and CSRF on every page that changes data (both are in the examples).
-* Every webhook / callback / AJAX function is declared in `"routes"` (`php skeletons/build.php check plugin <folder>`).
+* Every webhook / callback / AJAX function is declared in `"routes"` (`php build.php check plugin <folder>`).
 * Escape output in templates with `|escape`.
-* Bump `version` in `plugin.json`; set `github` or `zip` (a package on your own server or CDN) and/or `update_url`; sign zip releases with `php skeletons/build.php keygen|sign` (`PLUGINS.md`, "Signing your releases") (how updates are served: `PLUGINS.md`, "Publishing and serving updates").
+* Bump `version` in `plugin.json`; set `github` or `zip` (a package on your own server or CDN) and/or `update_url`; sign zip releases with `php build.php keygen|sign` ([Signing your releases](https://phpnuxbill.org/docs/extending/plugins/#signing-your-releases-optional-recommended); how updates are served: [Publishing and serving updates](https://phpnuxbill.org/docs/extending/plugins/#publishing-and-serving-updates)).
 * `php -l myplugin.php includes/*.php install.php uninstall.php`.

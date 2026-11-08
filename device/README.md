@@ -12,7 +12,7 @@ MyDevice/
 ## Make it yours
 
 ```bash
-php skeletons/build.php new device AcmeRouter "Acme Router"
+php build.php new device AcmeRouter "Acme Router"
 ```
 
 The slug is the **class name** and must match the file name (`AcmeRouter/AcmeRouter.php`, `class AcmeRouter`). The billing

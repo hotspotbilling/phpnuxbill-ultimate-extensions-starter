@@ -3,12 +3,17 @@
 Starter packages for every kind of PHPNuxBill extension. Each one is a **folder-style** package, so the Marketplace can
 install, update, back up, restore and uninstall it, and it declares what it needs (PHP version, extensions, licence...).
 
+You can use this repository on its own: clone it or download the zip, then run the commands below from its top folder (the one
+that holds `build.php`). You need the PHP command line with the **zip** extension (and **sodium** to sign releases). A PHPNuxBill
+site is not needed to build a package. The build script is `build.php` and all
+commands start with `php build.php`.
+
 | Skeleton | Folder | Manifest | Installs to | Entry point |
 |---|---|---|---|---|
-| [Plugin](plugin/README.md) | `skeletons/plugin/` | `plugin.json` | `system/plugin/<slug>/` | `<slug>.php` (hooks, menus, pages) |
-| [Payment gateway](gateway/README.md) | `skeletons/gateway/` | `gateway.json` | `system/paymentgateway/<slug>/` | `<slug>.php` (`<slug>_*` functions) |
-| [Theme](theme/README.md) | `skeletons/theme/` | `theme.json` | `ui/themes/<slug>/` | templates + `functions.php` |
-| [Device driver](device/README.md) | `skeletons/device/` | `device.json` | `system/devices/<Class>/` | `<Class>.php` (one class) |
+| [Plugin](plugin/README.md) | `plugin/` | `plugin.json` | `system/plugin/<slug>/` | `<slug>.php` (hooks, menus, pages) |
+| [Payment gateway](gateway/README.md) | `gateway/` | `gateway.json` | `system/paymentgateway/<slug>/` | `<slug>.php` (`<slug>_*` functions) |
+| [Theme](theme/README.md) | `theme/` | `theme.json` | `ui/themes/<slug>/` | templates + `functions.php` |
+| [Device driver](device/README.md) | `device/` | `device.json` | `system/devices/<Class>/` | `<Class>.php` (one class) |
 
 Gateways and devices use exactly the same folder method as plugins and themes: a manifest named after the type, a main PHP
 file named after the slug, and optional `ui/` for templates. The older single-file layout still works for gateways, devices
@@ -18,25 +23,25 @@ and plugins; Marketplace has a "Convert to folder" button for it.
 
 ```bash
 # list the skeletons
-php skeletons/build.php list
+php build.php list
 
 # make your own copy: renames files, class/function prefixes, titles and the table name, then zips it
-php skeletons/build.php new plugin  acme_sms    "Acme SMS"
-php skeletons/build.php new gateway acmepay     "Acme Pay"
-php skeletons/build.php new theme   neon_blue   "Neon Blue"
-php skeletons/build.php new device  AcmeRouter  "Acme Router"
+php build.php new plugin  acme_sms    "Acme SMS"
+php build.php new gateway acmepay     "Acme Pay"
+php build.php new theme   neon_blue   "Neon Blue"
+php build.php new device  AcmeRouter  "Acme Router"
 
 # or zip the untouched skeletons
-php skeletons/build.php zip
+php build.php zip
 ```
 
-Output goes to `skeletons/dist/<slug>/` (the folder) and `skeletons/dist/<slug>.zip`.
+Output goes to `dist/<slug>/` (the folder) and `dist/<slug>.zip`, next to `build.php`.
 
 Install it either way:
 
 * **Marketplace**: open the matching tab (Plugins, Payment Gateways, Themes, Device Drivers), press **Upload**, pick the zip.
   The package is syntax-checked, its requirements are verified, and any existing copy is backed up first.
-* **By hand**: copy `skeletons/dist/<slug>/` into the folder shown in the table.
+* **By hand**: copy `dist/<slug>/` into the folder shown in the table, inside your PHPNuxBill site.
 
 Slug rules (the build script enforces them):
 
@@ -71,9 +76,9 @@ All four manifests share these keys (all optional except `name` and `slug`):
 * `requires_*` are checked before install and shown on the card. A missing PHP version/extension blocks the install.
 * `update_url` returns JSON with `version` (or a GitHub release `tag_name`); the Marketplace compares it with `version`.
 * `github` lets the Marketplace update the extension from its repository.
-* Licensing: put your own rules in code with `register_license($slug, $statusFn, $saveFn)` (see `PLUGINS.md` > Licensing); the manifest flag below is editable by the customer and is only a reminder.
+* Licensing: put your own rules in code with `register_license($slug, $statusFn, $saveFn)` (see the [plugin guide](https://phpnuxbill.org/docs/extending/plugins/#licensing-a-paid-extension)); the manifest flag below is editable by the customer and is only a reminder.
 * `requires_license: true` blocks activation until the admin saves a key. There is no separate License page: once the extension is installed, its card in Marketplace (Plugins, Payment Gateways, Devices or Themes) shows a *License needed* badge and a **License** button, which opens the key box. The extension is **not run** until then (a plugin is not loaded, a gateway or driver is not used, a theme falls back to the default). If `license_check_url` is
-  set, the key is POSTed there (`key`, `slug`, `type`, `domain`) and must answer `{"valid": true}`. Add `license_public_key` (base64 Ed25519) and the answer must also carry `expires` and a `signature` over `type|slug|host|key|expires|valid`, checked locally on every request (see `PLUGINS.md` > Licensing). Read the key from your
+  set, the key is POSTed there (`key`, `slug`, `type`, `domain`) and must answer `{"valid": true}`. Add `license_public_key` (base64 Ed25519) and the answer must also carry `expires` and a `signature` over `type|slug|host|key|expires|valid`, checked locally on every request (see the [plugin guide](https://phpnuxbill.org/docs/extending/plugins/#licensing-a-paid-extension)). Read the key from your
   code with `Extensions::license('<type>', '<slug>')`.
 * Add `"preview": "preview.png"` to `theme.json` for the theme card image.
 
@@ -106,4 +111,4 @@ Security reminders that apply to every extension: check `_admin()` / `_auth()` a
 `Csrf::check(_post('csrf_token'))` on every state-changing request; escape output (`|escape`) and never concatenate user input
 into SQL (Idiorm binds values); verify webhook signatures before trusting a body.
 
-`skeletons/` has an `.htaccess` that blocks web access; `skeletons/dist/` is git-ignored.
+`dist/` is git-ignored here. The `.htaccess` in this folder blocks web access when it sits inside a PHPNuxBill site.
