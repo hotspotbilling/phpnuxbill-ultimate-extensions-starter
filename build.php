@@ -335,8 +335,18 @@ switch ($cmd) {
         }
         needSodium();
         $pair = sodium_crypto_sign_keypair();
-        file_put_contents($file, bin2hex(sodium_crypto_sign_secretkey($pair)) . "\n");
-        @chmod($file, 0600);
+        // the file is created already closed to everyone but its owner, so the key is never readable by others, even briefly
+        $oldUmask = umask(0077);
+        $written = @file_put_contents($file, bin2hex(sodium_crypto_sign_secretkey($pair)) . "\n");
+        umask($oldUmask);
+        if ($written === false) {
+            @unlink($file);
+            fail("could not write $file (check that the folder exists and is writable)");
+        }
+        if (!chmod($file, 0600)) {
+            @unlink($file);
+            fail("could not restrict $file to its owner (chmod 0600 failed), so the key was not kept; make the key in a folder you own");
+        }
         out("Private key saved to $file. Keep it offline and back it up. Never publish it or commit it.");
         out('Public key (put it in your repository entry as "public_key"):');
         out(bin2hex(sodium_crypto_sign_publickey($pair)));
